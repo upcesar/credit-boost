@@ -31,6 +31,8 @@ public static class AuthConfigurations
         var jwtSection = configuration.GetSection("JWT");
 
         services.Configure<JwtOptions>(jwtSection);
+
+
         var jwt = jwtSection.Get<JwtOptions>();
 
         // Adding Authentication

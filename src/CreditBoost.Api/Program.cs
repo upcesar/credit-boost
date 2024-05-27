@@ -1,5 +1,6 @@
 using CreditBoost.Api.Configurations;
 using CreditBoost.Infra.Data;
+using CreditBoost.Infra.Http;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.RegisterCommandHandlers();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterQueries();
 builder.Services.RegisterDataSeeding();
+
+builder.Services.RegisterHttpServices(configuration);
 
 builder.Services.AddControllers();
 

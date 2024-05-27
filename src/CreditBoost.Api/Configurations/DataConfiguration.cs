@@ -13,6 +13,7 @@ public static class DataConfiguration
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBeneficiaryRepository, BeneficiaryRepository>();
+        services.AddScoped<ITopUpTransactionRepository, TopUpTransactionRepository>();
         services.AddScoped<ITopUpOptionRepository, TopUpOptionRepository>();
     }
 

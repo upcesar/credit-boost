@@ -25,6 +25,7 @@ public sealed class LoginCommandHandler(UserManager<IdentityUser> userManager, I
         if (user is not null && await userManager.CheckPasswordAsync(user, request.Password))
         {
             List<Claim> authClaims = [
+                new Claim(ClaimTypes.Sid, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             ];

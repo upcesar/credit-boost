@@ -1,3 +1,4 @@
+using CreditBoost.Infra.Auth.Models;
 using CreditBoost.Infra.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,16 @@ namespace CreditBoost.Api.Configurations;
 
 public static class AuthConfigurations
 {
-    public static void AddIdentityServerAuthentication(this IServiceCollection services)
+    public static void AddAppAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddIdentityServerAuthentication();
+        services.AddJwtAuthentication(configuration);
+
+        services.AddHttpContextAccessor();
+        services.AddScoped<IAuthenticatedUser, AuthenticatedUser>();
+    }
+
+    private static void AddIdentityServerAuthentication(this IServiceCollection services)
     {
         // Add IdentityServer
         services.AddIdentityCore<IdentityUser>()
@@ -16,7 +26,7 @@ public static class AuthConfigurations
                 .AddDefaultTokenProviders();
     }
 
-    public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    private static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSection = configuration.GetSection("JWT");
 

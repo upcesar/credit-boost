@@ -1,3 +1,4 @@
+using CreditBoost.Infra.Auth.Models;
 using CreditBoost.Infra.Data.UoW;
 using System.ComponentModel.DataAnnotations;
 
@@ -5,13 +6,15 @@ namespace CreditBoost.Api.Application.CommandHandlers;
 
 public abstract class CommandHandler(IUnitOfWork unitOfWork)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthenticatedUser _authenticatedUser;
 
     protected IUnitOfWork UnitOfWork => unitOfWork;
 
-    protected CommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : this(unitOfWork)
+    protected Guid CurrentUserId => _authenticatedUser.UserId;
+
+    protected CommandHandler(IUnitOfWork unitOfWork, IAuthenticatedUser authenticatedUser) : this(unitOfWork)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _authenticatedUser = authenticatedUser;
     }
 
     protected async Task<ValidationResult> SaveChangesAsync()
@@ -24,14 +27,5 @@ public abstract class CommandHandler(IUnitOfWork unitOfWork)
         return ValidationResult.Success;
     }
 
-    private async Task<string> GetUserName()
-    {
-        var user = _httpContextAccessor.HttpContext.User;
-        if (user is not null && user.Identity.IsAuthenticated)
-        {
-            return user.Identity.Name;
-        }
 
-        return string.Empty;
-    }
 }

@@ -19,12 +19,16 @@ public sealed class BeneficiaryRepository(CreditBoostDbContext context) : IBenef
 
     public async Task<IEnumerable<Beneficiary>> GetByUser(Guid userId)
     {
-        return await context.Beneficiaries.Where(a => a.UserId.Equals(userId)).ToListAsync();
+        return await context.Beneficiaries
+            .Where(a => a.UserId.Equals(userId))
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Beneficiary>> GetByUserId(Guid userId)
     {
-        return await context.Beneficiaries.Where(a => a.UserId.Equals(userId)).ToListAsync();
+        return await context.Beneficiaries
+            .Where(a => a.UserId.Equals(userId))
+            .ToListAsync();
     }
 
     public async Task<Beneficiary> GetByAsync(Expression<Func<Beneficiary, bool>> predicate)
@@ -34,7 +38,9 @@ public sealed class BeneficiaryRepository(CreditBoostDbContext context) : IBenef
 
     public async Task<IEnumerable<Beneficiary>> GetManyByAsync(Expression<Func<Beneficiary, bool>> predicate)
     {
-        return await context.Beneficiaries.Where(predicate).ToListAsync();
+        return await context.Beneficiaries
+            .Where(predicate)
+            .ToListAsync();
     }
 
     public void Add(Beneficiary entity)

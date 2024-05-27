@@ -12,13 +12,12 @@ builder.Services.AddDbContext<CreditBoostDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 // Add IdentityServer
-builder.Services.AddIdentityServerAuthentication();
-builder.Services.AddJwtAuthentication(configuration);
+builder.Services.AddAppAuthentication(configuration);
 builder.Services.AddAuthorization();
 
 builder.Services.RegisterCommandHandlers();
 builder.Services.RegisterRepositories();
-builder.Services.AddHttpContextAccessor();
+builder.Services.RegisterQueries();
 
 builder.Services.AddControllers();
 

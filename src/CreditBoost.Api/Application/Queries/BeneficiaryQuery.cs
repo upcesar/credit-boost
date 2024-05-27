@@ -1,17 +1,31 @@
 using CreditBoost.Domain.Interfaces;
+using CreditBoost.Infra.Auth.Models;
 
 namespace CreditBoost.Api.Application.Queries;
 
 public interface IBeneficiaryQuery
 {
-    Task<IEnumerable<string>> GetAll();
+    Task<IEnumerable<BeneficiaryDto>> GetAvailables();
 }
 
-public class BeneficiaryQuery(IBeneficiaryRepository beneficiaryRepository)
+public sealed class BeneficiaryDto
 {
-    public async Task<IEnumerable<string>> GetAll()
+    public string Nickname { get; set; }
+    public decimal Balance { get; set; }
+}
+
+public class BeneficiaryQuery(IBeneficiaryRepository beneficiaryRepository, IAuthenticatedUser authenticatedUser)
+    : IBeneficiaryQuery
+{
+
+    public async Task<IEnumerable<BeneficiaryDto>> GetAvailables()
     {
-        var berneficiaries = await beneficiaryRepository.GetByUserId(Guid.Empty);
-        return null;
+        var beneficiaries = await beneficiaryRepository.GetByUserId(authenticatedUser.UserId);
+
+        return beneficiaries?.Select(b => new BeneficiaryDto
+        {
+            Nickname = b.Nickname,
+            Balance = b.Balance,
+        });
     }
 }

@@ -20,8 +20,4 @@
     <ProjectReference Include="..\CreditBoost.Domain\CreditBoost.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Auth\Models\" />
-  </ItemGroup>
-
 </Project>

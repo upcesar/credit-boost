@@ -37,6 +37,11 @@ public sealed class UserRepository(CreditBoostDbContext context) : IUserReposito
         context.AppUsers.Add(entity);
     }
 
+    public void Add(IEnumerable<User> entities)
+    {
+        context.AppUsers.AddRange(entities);
+    }
+
     public void Update(User entity)
     {
         context.AppUsers.Update(entity);

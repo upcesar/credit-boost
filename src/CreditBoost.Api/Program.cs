@@ -18,6 +18,7 @@ builder.Services.AddAuthorization();
 builder.Services.RegisterCommandHandlers();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterQueries();
+builder.Services.RegisterDataSeeding();
 
 builder.Services.AddControllers();
 
@@ -33,6 +34,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.SeedData().Wait();
 
 app.UseHttpsRedirection();
 

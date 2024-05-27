@@ -8,6 +8,7 @@ public interface IRepository<T> : IReadonlyRepository<T>, IWriteOnlyRepository<T
 public interface IWriteOnlyRepository<T> where T : Entity
 {
     void Add(T entity);
+    void Add(IEnumerable<T> entities);
     void Update(T entity);
     void Delete(T entity);
 }

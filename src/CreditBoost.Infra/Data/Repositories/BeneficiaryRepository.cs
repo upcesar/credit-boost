@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace CreditBoost.Infra.Data.Repositories;
-
 public sealed class BeneficiaryRepository(CreditBoostDbContext context) : IBeneficiaryRepository
 {
     public async Task<IEnumerable<Beneficiary>> GetAllAsync()
@@ -46,6 +45,11 @@ public sealed class BeneficiaryRepository(CreditBoostDbContext context) : IBenef
     public void Add(Beneficiary entity)
     {
         context.Beneficiaries.Add(entity);
+    }
+
+    public void Add(IEnumerable<Beneficiary> entities)
+    {
+        context.Beneficiaries.AddRange(entities);
     }
 
     public void Update(Beneficiary entity)

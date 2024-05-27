@@ -1,5 +1,6 @@
 using CreditBoost.Api.Application.CommandHandlers;
 using CreditBoost.Api.Application.Commands;
+using CreditBoost.Api.Application.Responses;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -13,5 +14,8 @@ public static class MediatrConfiguration
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
         services.AddScoped<IRequestHandler<RegisterUserCommand, ValidationResult>, RegisterUserCommandHandler>();
+        services.AddScoped<IRequestHandler<LoginCommand, AuthenticationResponse>, LoginCommandHandler>();
+
+        services.AddScoped<IRequestHandler<CreateBeneficiaryCommand, ValidationResult>, CreateBeneficiaryCommandHandler>();
     }
 }

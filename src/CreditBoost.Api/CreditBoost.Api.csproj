@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CreditBoost.Domain\CreditBoost.Domain.csproj" />
     <ProjectReference Include="..\CreditBoost.Infra\CreditBoost.Infra.csproj" />
   </ItemGroup>

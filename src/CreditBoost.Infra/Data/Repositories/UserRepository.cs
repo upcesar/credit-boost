@@ -22,11 +22,6 @@ public sealed class UserRepository(CreditBoostDbContext context) : IUserReposito
         return await context.AppUsers.SingleOrDefaultAsync(a => a.Id.Equals(id));
     }
 
-    public async Task<User> GetByIdentityUser(string identityUserId)
-    {
-        return await context.AppUsers.FirstOrDefaultAsync(a => a.IdentityUserId.Equals(identityUserId));
-    }
-
     public async Task<User> GetByUsername(string userName)
     {
         return await context.AppUsers.FirstOrDefaultAsync(a => a.UserName.Equals(userName));
@@ -35,5 +30,20 @@ public sealed class UserRepository(CreditBoostDbContext context) : IUserReposito
     public async Task<IEnumerable<User>> GetManyByAsync(Expression<Func<User, bool>> predicate)
     {
         return await context.AppUsers.Where(predicate).ToListAsync();
+    }
+
+    public void Add(User entity)
+    {
+        context.AppUsers.Add(entity);
+    }
+
+    public void Update(User entity)
+    {
+        context.AppUsers.Update(entity);
+    }
+
+    public void Delete(User entity)
+    {
+        context.AppUsers.Remove(entity);
     }
 }

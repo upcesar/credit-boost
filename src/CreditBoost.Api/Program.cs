@@ -17,6 +17,8 @@ builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddAuthorization();
 
 builder.Services.RegisterCommandHandlers();
+builder.Services.RegisterRepositories();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 

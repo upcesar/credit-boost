@@ -26,6 +26,4 @@ public abstract class CommandHandler(IUnitOfWork unitOfWork)
 
         return ValidationResult.Success;
     }
-
-
 }

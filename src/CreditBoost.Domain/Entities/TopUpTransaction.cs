@@ -15,16 +15,14 @@ public class TopUpTransaction : Entity
         Guid id,
         Guid beneficiaryId,
         decimal amount,
-        decimal charge,
-        decimal totalAmount,
-        DateTime timestamp)
+        decimal charge)
     {
         Id = id;
         BeneficiaryId = beneficiaryId;
         Amount = amount;
         Charge = charge;
-        TotalAmount = totalAmount;
-        Timestamp = timestamp;
+        TotalAmount = Amount - Charge;
+        Timestamp = DateTime.Now;
     }
 
     private TopUpTransaction() { }

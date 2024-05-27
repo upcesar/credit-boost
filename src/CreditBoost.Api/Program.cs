@@ -14,8 +14,9 @@ builder.Services.AddDbContext<CreditBoostDbContext>(options =>
 // Add IdentityServer
 builder.Services.AddIdentityServerAuthentication();
 builder.Services.AddJwtAuthentication(configuration);
-
 builder.Services.AddAuthorization();
+
+builder.Services.RegisterCommandHandlers();
 
 builder.Services.AddControllers();
 

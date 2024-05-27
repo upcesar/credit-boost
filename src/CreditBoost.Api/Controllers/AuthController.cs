@@ -1,83 +1,36 @@
-using CreditBoost.Api.Application.Requests;
-using CreditBoost.Api.Configurations;
-using Microsoft.AspNetCore.Identity;
+using CreditBoost.Api.Application.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace CreditBoost.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(
-    UserManager<IdentityUser> userManager,
-    IOptions<JwtOptions> jwtOptions) : ControllerBase
+public class AuthController(IMediator mediator) : ControllerBase
 {
-    private readonly JwtOptions _jwt = jwtOptions.Value;
-
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterUserCommand request)
     {
-        var userExists = await userManager.FindByNameAsync(request.UserName);
+        var result = await mediator.Send(request);
 
-        if (userExists is not null)
-            return StatusCode(StatusCodes.Status400BadRequest, "Error -> User already exists!");
-
-        IdentityUser user = new()
+        if (result != ValidationResult.Success)
         {
-            Email = request.Email,
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = request.UserName
-        };
-
-        var result = await userManager.CreateAsync(user, request.Password);
-
-        if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status400BadRequest, result.Errors);
+            return BadRequest(result);
+        }
 
         return CreatedAtAction(nameof(Login), "User created successfully!");
     }
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest model)
+    public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
-        var user = await userManager.FindByNameAsync(model.Username);
+        var result = await mediator.Send(command);
 
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
-        {
-            List<Claim> authClaims = [
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            ];
-
-            var token = GetToken(authClaims);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
-        }
-        return Unauthorized();
-    }
-
-    private JwtSecurityToken GetToken(List<Claim> authClaims)
-    {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
-
-        var token = new JwtSecurityToken(
-            issuer: _jwt.ValidIssuer,
-            audience: _jwt.ValidAudience,
-            expires: DateTime.Now.AddHours(3),
-            claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-        return token;
+        return result.IsAuthenticated ?
+            Ok(result) :
+            Unauthorized();
     }
 }

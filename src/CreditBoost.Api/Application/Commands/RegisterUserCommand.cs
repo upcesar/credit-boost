@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CreditBoost.Api.Application.Requests;
+namespace CreditBoost.Api.Application.Commands;
 
-public class RegisterUserRequest
+public sealed class RegisterUserCommand : Command
 {
     [Required(ErrorMessage = "User Name is required")]
     public string UserName { get; set; }

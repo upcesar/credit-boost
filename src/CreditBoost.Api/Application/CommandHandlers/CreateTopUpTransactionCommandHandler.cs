@@ -4,7 +4,7 @@ using CreditBoost.Domain.Constants;
 using CreditBoost.Domain.Entities;
 using CreditBoost.Infra.Auth.Models;
 using CreditBoost.Infra.Data.UoW;
-using CreditBoost.Infra.Http;
+using CreditBoost.Infra.Http.DummyBalance;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,7 +15,7 @@ public sealed class CreateTopUpTransactionCommandHandler(
     ITopUpOptionQuery topUpOptionQuery,
     ITopUpTransactionQuery topUpTransactionQuery,
     IAuthenticatedUser authenticatedUser,
-    BalanceHttpService balanceHttpService)
+    IBalanceHttpService balanceHttpService)
     : CommandHandler(unitOfWork, authenticatedUser)
     , IRequestHandler<CreateTopUpTransactionCommand, ValidationResult>
 {

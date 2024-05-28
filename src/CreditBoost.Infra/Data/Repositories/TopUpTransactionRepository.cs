@@ -14,6 +14,7 @@ public sealed class TopUpTransactionRepository(CreditBoostDbContext context) : I
 
     public async Task<TopUpTransaction> GetByIdAsync(Guid id)
     {
+        var t = await context.TopUpTransactions.ToListAsync();
         return await context.TopUpTransactions.SingleOrDefaultAsync(a => a.Id.Equals(id));
     }
 
@@ -26,6 +27,15 @@ public sealed class TopUpTransactionRepository(CreditBoostDbContext context) : I
     {
         return await context.TopUpTransactions
             .Where(predicate)
+            .ToListAsync();
+    }
+    public async Task<IEnumerable<TopUpTransaction>> GetMonthlyByUser(Guid userId)
+    {
+        return await context.TopUpTransactions
+            .AsNoTracking()
+            .Include(t => t.Beneficiary)
+            .ThenInclude(b => b.User)
+            .Where(t => t.Beneficiary.User.Id.Equals(userId))
             .ToListAsync();
     }
 
@@ -47,4 +57,5 @@ public sealed class TopUpTransactionRepository(CreditBoostDbContext context) : I
     {
         context.TopUpTransactions.Remove(entity);
     }
+
 }

@@ -12,7 +12,7 @@ public class AuthenticatedUser(IHttpContextAccessor httpContextAccessor) : IAuth
 {
     private readonly ClaimsPrincipal _user = httpContextAccessor.HttpContext.User;
 
-    private bool IsAuthenticated => _user is not null && _user.Identity.IsAuthenticated;
+    private bool IsAuthenticated => _user is ClaimsPrincipal { Identity.IsAuthenticated: true };
 
     public Guid UserId => GetUserId();
     public string UserName => GetUserName();
@@ -22,7 +22,7 @@ public class AuthenticatedUser(IHttpContextAccessor httpContextAccessor) : IAuth
         if (IsAuthenticated)
         {
             var sid = _user.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid));
-            return Guid.Parse(sid.Value);
+            return Guid.TryParse(sid.Value, out var userId) ? userId : Guid.Empty;
         }
 
         return Guid.Empty;

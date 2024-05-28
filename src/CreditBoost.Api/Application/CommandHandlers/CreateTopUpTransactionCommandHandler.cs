@@ -1,5 +1,6 @@
 using CreditBoost.Api.Application.Commands;
 using CreditBoost.Api.Application.Queries;
+using CreditBoost.Domain.Constants;
 using CreditBoost.Domain.Entities;
 using CreditBoost.Infra.Auth.Models;
 using CreditBoost.Infra.Data.UoW;
@@ -9,7 +10,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CreditBoost.Api.Application.CommandHandlers;
 
-public sealed class CreateTopUpTransactionCommandHandler(IUnitOfWork unitOfWork, ITopUpOptionQuery topUpOptionQuery, IAuthenticatedUser authenticatedUser, BalanceHttpService balanceHttpService)
+public sealed class CreateTopUpTransactionCommandHandler(
+    IUnitOfWork unitOfWork,
+    ITopUpOptionQuery topUpOptionQuery,
+    ITopUpTransactionQuery topUpTransactionQuery,
+    IAuthenticatedUser authenticatedUser,
+    BalanceHttpService balanceHttpService)
     : CommandHandler(unitOfWork, authenticatedUser)
     , IRequestHandler<CreateTopUpTransactionCommand, ValidationResult>
 {
@@ -29,6 +35,9 @@ public sealed class CreateTopUpTransactionCommandHandler(IUnitOfWork unitOfWork,
 
         if (await ChargeAmount(transaction.TotalAmount))
             return new ValidationResult("Error on charging transaction amount.");
+
+        if (await CheckBeneficiaryMonthlyLimit(transaction))
+            return new ValidationResult("The user has reached the monthly limit for top ups");
 
         UnitOfWork.TopUpTransactionRepository.Add(transaction);
         return await SaveChangesAsync();
@@ -51,5 +60,25 @@ public sealed class CreateTopUpTransactionCommandHandler(IUnitOfWork unitOfWork,
     private async Task<bool> ChargeAmount(decimal amount)
     {
         return await balanceHttpService.ChargeAsync(CurrentUserId, amount);
+    }
+
+    private async Task<bool> CheckBeneficiaryMonthlyLimit(TopUpTransaction transaction)
+    {
+        var transactions = await topUpTransactionQuery.GetMonthlyTopUpTransactionsByBeneficiary(CurrentUserId, transaction.BeneficiaryId);
+
+        var maxAmountForTopUp = await PickMonthlyMaxAmount();
+        return transactions.Any(t => t.Amount > maxAmountForTopUp);
+    }
+
+    private async Task<decimal> PickMonthlyMaxAmount()
+    {
+        var user = await UnitOfWork.Users.GetByIdAsync(CurrentUserId);
+
+        if (user is User { IsVerified: true })
+        {
+            return MaximumTopUpAmounts.VerifiedUsers;
+        }
+
+        return MaximumTopUpAmounts.UnverifiedUsers;
     }
 }

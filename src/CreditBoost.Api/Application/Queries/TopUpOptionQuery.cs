@@ -8,7 +8,7 @@ public interface ITopUpOptionQuery
     Task<IEnumerable<TopUpOptionResponse>> GetAvailables();
 }
 
-public class TopUpOptionQuery(ITopUpOptionRepository topUpOptionRepository) : ITopUpOptionQuery
+public sealed class TopUpOptionQuery(ITopUpOptionRepository topUpOptionRepository) : ITopUpOptionQuery
 {
     public async Task<IEnumerable<TopUpOptionResponse>> GetAvailables()
     {

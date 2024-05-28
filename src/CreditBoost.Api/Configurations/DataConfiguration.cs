@@ -21,6 +21,7 @@ public static class DataConfiguration
     {
         services.AddScoped<IBeneficiaryQuery, BeneficiaryQuery>();
         services.AddScoped<ITopUpOptionQuery, TopUpOptionQuery>();
+        services.AddScoped<ITopUpTransactionQuery, TopUpTransactionQuery>();
     }
 
     public static void RegisterDataSeeding(this IServiceCollection services)

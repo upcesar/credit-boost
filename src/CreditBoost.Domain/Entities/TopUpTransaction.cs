@@ -21,7 +21,7 @@ public class TopUpTransaction : Entity
         BeneficiaryId = beneficiaryId;
         Amount = amount;
         Charge = charge;
-        TotalAmount = Amount - Charge;
+        TotalAmount = Amount + Charge;
         Timestamp = DateTime.Now;
     }
 

@@ -26,7 +26,7 @@ public class TopUpController(IMediator mediator, ITopUpOptionQuery topUpOptionQu
     [HttpGet("options")]
     public async Task<IActionResult> GetOptions()
     {
-        var topUpOptions = await topUpOptionQuery.GetAvailable();
+        var topUpOptions = await topUpOptionQuery.GetAvailables();
         return Ok(topUpOptions);
     }
 }

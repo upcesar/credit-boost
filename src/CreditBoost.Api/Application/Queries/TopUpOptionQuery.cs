@@ -5,12 +5,12 @@ namespace CreditBoost.Api.Application.Queries;
 
 public interface ITopUpOptionQuery
 {
-    Task<IEnumerable<TopUpOptionResponse>> GetAvailable();
+    Task<IEnumerable<TopUpOptionResponse>> GetAvailables();
 }
 
 public class TopUpOptionQuery(ITopUpOptionRepository topUpOptionRepository) : ITopUpOptionQuery
 {
-    public async Task<IEnumerable<TopUpOptionResponse>> GetAvailable()
+    public async Task<IEnumerable<TopUpOptionResponse>> GetAvailables()
     {
         var topUpOptions = await topUpOptionRepository.GetAllAsync();
 

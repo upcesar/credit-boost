@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace CreditBoost.Infra.Http;
 
@@ -20,14 +22,32 @@ public class ResilientHttpClient(HttpClient httpClient)
     {
         return await RetryPolicy.ExecuteAsync(() => httpClient.GetAsync(uri));
     }
+
+    public async Task<HttpResponseMessage> PostAsync<T>(string uri, T data = default)
+    {
+        var content = SerializeContent(data);
+        return await RetryPolicy.ExecuteAsync(() => httpClient.PostAsync(uri, content));
+    }
+
+    private StringContent SerializeContent<T>(T data)
+    {
+        var json = JsonSerializer.Serialize(data);
+        return new StringContent(json, Encoding.UTF8, "application/json");
+    }
 }
 
 public class BalanceHttpService(ResilientHttpClient resilientHttpClient, IOptions<HttpServiceSettings> options)
 {
-    public async Task<BalanceModel> GetAsync(Guid id)
+    public async Task<BalanceModel> GetBalanceAsync(Guid userId)
     {
-        var response = await resilientHttpClient.GetAsync($"{options.Value.Balance}/balance/{id}");
+        var response = await resilientHttpClient.GetAsync($"{options.Value.Balance}/balance/{userId}");
         return await response.Content.ReadFromJsonAsync<BalanceModel>();
+    }
+
+    public async Task<bool> ChargeAsync(Guid userId, decimal amount)
+    {
+        var response = await resilientHttpClient.PostAsync($"{options.Value.Balance}/charge/{userId}", new { userId, amount });
+        return response.IsSuccessStatusCode && await response.Content.ReadFromJsonAsync<bool>();
     }
 }
 
@@ -48,5 +68,6 @@ public class BalanceModel
 {
     public string FullName { get; set; }
     public string Employer { get; set; }
-    public decimal Amount { get; set; }
+    public decimal Balance { get; set; }
 }
+

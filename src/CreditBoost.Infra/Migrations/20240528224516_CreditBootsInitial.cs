@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CreditBoost.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class CreditBoostInitial : Migration
+    public partial class CreditBootsInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -187,8 +187,7 @@ namespace CreditBoost.Infra.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nickname = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
-                    Balance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                    Nickname = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,8 +209,7 @@ namespace CreditBoost.Infra.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Charge = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -222,11 +220,6 @@ namespace CreditBoost.Infra.Migrations
                         principalTable: "Beneficiaries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TopUpTransactions_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -277,11 +270,6 @@ namespace CreditBoost.Infra.Migrations
                 name: "IX_TopUpTransactions_BeneficiaryId",
                 table: "TopUpTransactions",
                 column: "BeneficiaryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TopUpTransactions_UserId",
-                table: "TopUpTransactions",
-                column: "UserId");
         }
 
         /// <inheritdoc />

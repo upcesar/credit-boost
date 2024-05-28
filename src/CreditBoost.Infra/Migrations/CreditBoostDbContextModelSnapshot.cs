@@ -28,10 +28,6 @@ namespace CreditBoost.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Balance")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -86,14 +82,9 @@ namespace CreditBoost.Infra.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BeneficiaryId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TopUpTransactions", (string)null);
                 });
@@ -332,10 +323,6 @@ namespace CreditBoost.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CreditBoost.Domain.Entities.User", null)
-                        .WithMany("TopUpTransactions")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Beneficiary");
                 });
 
@@ -398,8 +385,6 @@ namespace CreditBoost.Infra.Migrations
             modelBuilder.Entity("CreditBoost.Domain.Entities.User", b =>
                 {
                     b.Navigation("Beneficiaries");
-
-                    b.Navigation("TopUpTransactions");
                 });
 #pragma warning restore 612, 618
         }

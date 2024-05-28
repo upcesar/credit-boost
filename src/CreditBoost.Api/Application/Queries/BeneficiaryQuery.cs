@@ -19,8 +19,7 @@ public class BeneficiaryQuery(IBeneficiaryRepository beneficiaryRepository, IAut
 
         return beneficiaries?.Select(b => new BeneficiaryResponse
         {
-            Nickname = b.Nickname,
-            Balance = b.Balance,
+            Nickname = b.Nickname
         });
     }
 }

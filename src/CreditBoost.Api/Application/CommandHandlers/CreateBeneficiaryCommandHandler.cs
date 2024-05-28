@@ -25,8 +25,7 @@ public sealed class CreateBeneficiaryCommandHandler(IUnitOfWork unitOfWork, IAut
         Beneficiary beneficiary = new(
             id: request.Id,
             userId: CurrentUserId,
-            nickname: request.Nickname,
-            balance: decimal.Zero);
+            nickname: request.Nickname);
 
         UnitOfWork.Beneficiaries.Add(beneficiary);
         return await SaveChangesAsync();

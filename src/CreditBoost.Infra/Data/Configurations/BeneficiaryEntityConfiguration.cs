@@ -17,10 +17,6 @@ public sealed class BeneficiaryEntityConfiguration : IEntityTypeConfiguration<Be
             .HasMaxLength(20)
             .IsRequired();
 
-        builder.Property(f => f.Balance)
-            .HasPrecision(18, 2)
-            .IsRequired();
-
         builder.ToTable("Beneficiaries");
     }
 }

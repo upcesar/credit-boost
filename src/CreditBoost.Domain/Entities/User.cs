@@ -7,7 +7,6 @@ public class User : Entity
 
     // Navigation properties
     public ICollection<Beneficiary> Beneficiaries { get; private set; }
-    public ICollection<TopUpTransaction> TopUpTransactions { get; private set; }
 
     public User(Guid id, string username)
     {

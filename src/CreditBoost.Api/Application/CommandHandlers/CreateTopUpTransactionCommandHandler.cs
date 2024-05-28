@@ -27,39 +27,43 @@ public sealed class CreateTopUpTransactionCommandHandler(
             amount: request.Amount,
             charge: 1);
 
-        if (await ValidateInsufficientBalance(transaction.TotalAmount))
+        if (await ValidateInsufficientBalance(transaction))
             return new ValidationResult("Insufficient balance");
 
-        if (await ValidateUnavailablesTopUpOptions(transaction.Amount))
+        if (await ValidateUnavailablesTopUpOptions(transaction))
             return new ValidationResult("The amount is not available in top up options");
 
-        if (await ChargeAmount(transaction.TotalAmount))
+        if (await ChargeAmount(transaction))
             return new ValidationResult("Error on charging transaction amount.");
 
         if (await CheckBeneficiaryMonthlyLimit(transaction))
+            return new ValidationResult("The user has reached the monthly limit for top ups");
+
+        if (await CheckAllBeneficiaryMonthlyLimit())
             return new ValidationResult("The user has reached the monthly limit for top ups");
 
         UnitOfWork.TopUpTransactionRepository.Add(transaction);
         return await SaveChangesAsync();
     }
 
-    private async Task<bool> ValidateInsufficientBalance(decimal amount)
+
+    private async Task<bool> ValidateInsufficientBalance(TopUpTransaction transaction)
     {
         var externalServiceResult = await balanceHttpService.GetBalanceAsync(CurrentUserId);
-        return externalServiceResult.Balance < amount;
+        return externalServiceResult.Balance < transaction.TotalAmount;
     }
 
-    private async Task<bool> ValidateUnavailablesTopUpOptions(decimal amount)
+    private async Task<bool> ValidateUnavailablesTopUpOptions(TopUpTransaction transaction)
     {
         var topUpsAvailables = await topUpOptionQuery.GetAvailables();
         var availableAmounts = topUpsAvailables.Select(options => options.Amount);
 
-        return !availableAmounts.Contains(amount);
+        return !availableAmounts.Contains(transaction.Amount);
     }
 
-    private async Task<bool> ChargeAmount(decimal amount)
+    private async Task<bool> ChargeAmount(TopUpTransaction transaction)
     {
-        return await balanceHttpService.ChargeAsync(CurrentUserId, amount);
+        return await balanceHttpService.ChargeAsync(CurrentUserId, transaction.TotalAmount);
     }
 
     private async Task<bool> CheckBeneficiaryMonthlyLimit(TopUpTransaction transaction)
@@ -80,5 +84,11 @@ public sealed class CreateTopUpTransactionCommandHandler(
         }
 
         return MaximumTopUpAmounts.UnverifiedUsers;
+    }
+
+    private async Task<bool> CheckAllBeneficiaryMonthlyLimit()
+    {
+        var transactions = await topUpTransactionQuery.GetMonthlyTopUpTransactions(CurrentUserId);
+        return transactions.Any(t => t.Amount > MaximumTopUpAmounts.AllBenficiaries);
     }
 }

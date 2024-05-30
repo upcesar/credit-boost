@@ -33,14 +33,14 @@ public sealed class CreateTopUpTransactionCommandHandler(
         if (await ValidateUnavailablesTopUpOptions(transaction))
             return new ValidationResult("The amount is not available in top up options");
 
-        if (await ChargeAmount(transaction))
-            return new ValidationResult("Error on charging transaction amount.");
-
         if (await CheckBeneficiaryMonthlyLimit(transaction))
             return new ValidationResult("The user has reached the monthly limit for top ups");
 
         if (await CheckAllBeneficiaryMonthlyLimit())
             return new ValidationResult("The user has reached the monthly limit for top ups");
+
+        if (await ChargeAmount(transaction))
+            return new ValidationResult("Error on charging transaction amount.");
 
         UnitOfWork.TopUpTransactionRepository.Add(transaction);
         return await SaveChangesAsync();

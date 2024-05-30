@@ -1,4 +1,4 @@
-﻿using CreditBoost.Infra.Http.DummyBalance;
+using CreditBoost.Infra.Http.DummyBalance;
 using CreditBoost.Infra.Http.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +13,7 @@ public static class ExternalServiceConfiguration
         services.Configure<HttpServiceSettings>(httpSection);
 
         services.AddHttpClient<ResilientHttpClient>();
-        services.AddScoped<BalanceHttpService>();
+        services.AddScoped<IBalanceHttpService, BalanceHttpService>();
     }
 }
 

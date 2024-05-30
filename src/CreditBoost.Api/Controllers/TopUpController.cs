@@ -35,6 +35,7 @@ public class TopUpController(
         return transaction is null ? NotFound() : Ok(transaction);
     }
 
+    [AllowAnonymous]
     [HttpGet("options")]
     public async Task<IActionResult> GetOptions()
     {

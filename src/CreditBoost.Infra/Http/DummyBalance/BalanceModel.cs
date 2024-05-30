@@ -1,4 +1,4 @@
-﻿namespace CreditBoost.Infra.Http;
+﻿namespace CreditBoost.Infra.Http.DummyBalance;
 
 public class BalanceModel
 {

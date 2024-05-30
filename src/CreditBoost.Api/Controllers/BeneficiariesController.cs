@@ -1,5 +1,5 @@
-using CreditBoost.Api.Application.Commands;
-using CreditBoost.Api.Application.Queries;
+using CreditBoost.Application.Commands;
+using CreditBoost.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,8 @@ public class BeneficiariesController(IMediator mediator, IBeneficiaryQuery benef
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        return Ok();
+        var beneficiary = await beneficiaryQuery.GetById(id);
+        return beneficiary is null ? NotFound() : Ok(beneficiary);
     }
 
 

@@ -1,5 +1,5 @@
-using CreditBoost.Api.Application.Commands;
-using CreditBoost.Api.Application.Queries;
+using CreditBoost.Application.Commands;
+using CreditBoost.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +25,7 @@ public class TopUpController(
             return BadRequest(result);
         }
 
-        return CreatedAtAction(nameof(GetById), new { request.Id }, null);
+        return CreatedAtAction(nameof(GetById), new { request.Id }, "Top up transaction created successfully!");
     }
 
     [HttpGet("{id}")]

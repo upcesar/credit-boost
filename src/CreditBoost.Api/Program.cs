@@ -1,4 +1,5 @@
 using CreditBoost.Api.Configurations;
+using CreditBoost.Application.Configurations;
 using CreditBoost.Infra.Data;
 using CreditBoost.Infra.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +24,10 @@ builder.Services.RegisterRepositories();
 builder.Services.RegisterQueries();
 builder.Services.RegisterDataSeeding();
 
+builder.Services.RegisterMassTransit(configuration);
+
 builder.Services.RegisterHttpServices(configuration);
+
 
 builder.Services.AddControllers();
 

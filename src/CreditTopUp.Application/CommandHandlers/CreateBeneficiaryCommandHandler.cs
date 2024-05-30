@@ -18,9 +18,10 @@ public sealed class CreateBeneficiaryCommandHandler(IUnitOfWork unitOfWork, IAut
         var beneficiaries = await UnitOfWork.Beneficiaries.GetByUserId(CurrentUserId);
 
         if (beneficiaries.Count() >= maxBeneficiary)
-        {
             return new ValidationResult($"Use can only add up to {maxBeneficiary} beneficiaries");
-        }
+
+        if (beneficiaries.Any(b => b.Nickname == request.Nickname))
+            return new ValidationResult("The beneficiary already exist in the database");
 
         Beneficiary beneficiary = new(
             id: request.Id,

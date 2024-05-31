@@ -51,6 +51,19 @@ public class CreateBeneficiaryCommandHandlerTestsFixture
     {
         MockUnitOfWork.Reset();
 
+        var beneficiaries = FakerBeneficiary.Generate(6);
+
+        MockUnitOfWork
+            .Setup(s => s.Beneficiaries.GetByUserId(It.IsAny<Guid>()))
+            .ReturnsAsync(beneficiaries);
+
+        Handler = new(MockUnitOfWork.Object, MockAuthenticatedUser.Object);
+    }
+
+    public void PrepareBeneficiaryExistsOnDatabase()
+    {
+        MockUnitOfWork.Reset();
+
         var beneficiaries = FakerBeneficiary.Generate(3);
         beneficiaries.Add(new(
             id: CreateBeneficiaryCommand.Id,

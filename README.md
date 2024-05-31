@@ -3,7 +3,7 @@
 ## Overview
 The Credit Top-Up Service is a backend web application designed to facilitate the recharging of prepaid mobile accounts and other top-up services. It integrates with various APIs to provide seamless and efficient top-up functionalities.
 
-## Features
+## Features / Use Cases
 - Prepaid mobile top-up
 - Gift card recharges
 - Digital wallet recharges

@@ -42,8 +42,8 @@ public class CreateBeneficiaryCommandHandlerTests(CreateBeneficiaryCommandHandle
     public async Task Handle_ValidCommand_ShouldReturnBeneficiaryExists()
     {
         // Arrange
-        fixture.PrepareMaximumReachedBeneficiaries();
-        const string errorMessageExpected = "The beneficiary already exist in the database";
+        fixture.PrepareBeneficiaryExistsOnDatabase();
+        const string errorMessageExpected = "The beneficiary already exists in the database";
 
         var command = fixture.CreateBeneficiaryCommand;
         var handler = fixture.Handler;
